@@ -22,13 +22,41 @@ getAllShopifySellers = async (req, res) => {
 };
 
 // Get Shopify seller by ID
+getShopifySellerById=async (req,res)=>{
+  try{
+    const seller=await ShopifySeller.findById(req.params.id);
+    res.status(200).json(seller);
+  }
+  catch(error){
+    res.status(500).json({message:'Error fetching Shopify seller',error});
+  }
+}
 
 // Update Shopify seller
-
+updateShopifySeller=async (req,res)=>{
+  try{
+    const seller=await ShopifySeller.findByIdAndUpdate(req.params.id,req.body,{new:true});
+    res.status(200).json(seller);
+  }
+  catch(error){
+     res.status(500).json({message:'Error updating Shopify seller',error});
+  }
+}
 // Delete Shopify seller
-
+deleteShopifySeller=async (req,res)=>{
+  try{
+    const seller=await ShopifySeller.findByIdAndDelete(req.params.id);
+    res.status(200).json({message:'Shopify seller deleted successfully',seller});
+  }
+  catch(error){
+    res.status(500).json({message:'Error deleting Shopify seller',error});
+  }
+}
 
 module.exports = {
     createShopifySeller,
-    getAllShopifySellers
+    getAllShopifySellers,
+    getShopifySellerById,
+    updateShopifySeller,
+    deleteShopifySeller 
 };

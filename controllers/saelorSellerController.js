@@ -11,11 +11,6 @@ createSaelorSeller = async (req, res) => {
   }
 };
 
-// router.get('/', getAllSaelorSellers);
-// router.get('/:id', getSaelorSellerById);
-// router.put('/:id', updateSaelorSeller);
-// router.delete('/:id', deleteSaelorSeller);
-
 // Get all Saelor sellers
 getAllSaelorSellers = async (req, res) => {
   try{

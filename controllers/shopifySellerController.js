@@ -85,8 +85,8 @@ const updateShopifySeller = async (req, res) => {
       // Prepare updated documents array
       const newDocuments = req.files.map((file, index) => ({
         documentType: Array.isArray(documentTypes)
-          ? (documentTypes[index] || "GST Certificate")
-          : documentTypes || "GST Certificate",
+          ? (documentTypes[index] || "Default Document")
+          : documentTypes || "Default Document",
         documentURL: new Binary(file.buffer),
       }));
 

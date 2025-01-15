@@ -15,7 +15,7 @@ const createShopifySeller = async (req, res) => {
 
     // Prepare documents array
     const documents = req.files.map((file, index) => ({
-      documentType: documentTypes && documentTypes[index] ? documentTypes[index] : "Default Document Type",
+      documentType: documentTypes && documentTypes[index] ? documentTypes[index] : "Document Type",
       documentURL: new Binary(file.buffer), // Convert file buffer to BSON Binary
     }));
 
@@ -61,11 +61,7 @@ const getShopifySellerById = async (req, res) => {
     }
 
     res.status(200).json({
-      seller: {
-        shopLink: seller.shopLink,
-        businessDetails: seller.businessDetails,
-        status: seller.status,
-      },
+      seller,
     });
   } catch (error) {
     console.error("Error fetching Shopify seller:", error);
@@ -108,7 +104,6 @@ const updateShopifySeller = async (req, res) => {
         }
       });
     }
-
     // Update other fields
     seller.shopLink = shopLink || seller.shopLink;
     seller.accessKey = accessKey || seller.accessKey;

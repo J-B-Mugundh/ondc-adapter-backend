@@ -4,10 +4,15 @@ const WooCommerceSellerSchema = new mongoose.Schema({
   shopLink: { type: String, required: true },
   consumerKey: { type: String, required: true },
   consumerSecret: { type: String, required: true },
+  businessDetails: {
+    businessName: { type: String, required: true },
+    businessRegistrationNumber: { type: String, required: true },
+    GSTIN: { type: String, required: true }
+  },
   status: {
     type: String,
     enum: ["Under Verification", "Verified", "Rejected"],
-    required: true
+    default: "Under Verification",
   },
   documents: [
     {
@@ -15,11 +20,6 @@ const WooCommerceSellerSchema = new mongoose.Schema({
       documentURL: { type: String, required: true },
     }
   ],
-  businessDetails: {
-    businessName: { type: String, required: true },
-    businessRegistrationNumber: { type: String, required: true },
-    GSTIN: { type: String, required: true }
-  },
 },
   { timestamps: true }
 );

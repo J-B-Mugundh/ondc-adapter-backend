@@ -17,7 +17,7 @@ const ShopifySellerSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["Under Verification", "Verified", "Rejected"],
-    required: true
+    default: "Under Verification",
   }
 },
   { timestamps: true }

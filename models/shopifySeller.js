@@ -14,13 +14,13 @@ const ShopifySellerSchema = new mongoose.Schema({
       documentURL: { type: Buffer, required: true },
     }
   ],
-  status: { 
-    type: String, 
-    enum: ["Under Verification", "Verified", "Rejected"], 
-    required: true 
-  },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+  status: {
+    type: String,
+    enum: ["Under Verification", "Verified", "Rejected"],
+    required: true
+  }
+},
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("ShopifySeller", ShopifySellerSchema);

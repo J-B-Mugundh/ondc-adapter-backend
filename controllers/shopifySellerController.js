@@ -70,7 +70,6 @@ const getShopifySellerById = async (req, res) => {
 };
 
 
-// Update Shopify seller
 const updateShopifySeller = async (req, res) => {
   try {
     const { shopLink, accessKey, businessDetails, status, documentTypes } = req.body;
@@ -85,29 +84,41 @@ const updateShopifySeller = async (req, res) => {
     if (req.files && req.files.length > 0) {
       // Prepare updated documents array
       const newDocuments = req.files.map((file, index) => ({
-        documentType: documentTypes && documentTypes[index] ? documentTypes[index] : "Default Document Type",
+        documentType: Array.isArray(documentTypes)
+          ? (documentTypes[index] || "GST Certificate")
+          : documentTypes || "GST Certificate",
         documentURL: new Binary(file.buffer),
       }));
 
-      // Append new documents to existing ones
+      // Process new documents
       newDocuments.forEach((newDoc) => {
         const existingDocIndex = seller.documents.findIndex(
           (doc) => doc.documentType === newDoc.documentType
         );
 
         if (existingDocIndex !== -1) {
-          // If document with the same type exists, replace it
-          seller.documents[existingDocIndex].documentURL = newDoc.documentURL;
-        } else {
-          // Otherwise, add new document
-          seller.documents.push(newDoc);
+          // If a document with the same type exists, replace it
+          seller.documents.splice(existingDocIndex, 1); // Remove the old document
         }
+
+        // Add the new document (either as a replacement or a new entry)
+        seller.documents.push(newDoc);
       });
     }
+
     // Update other fields
     seller.shopLink = shopLink || seller.shopLink;
     seller.accessKey = accessKey || seller.accessKey;
-    seller.businessDetails = businessDetails ? JSON.parse(businessDetails) : seller.businessDetails;
+
+    // Safely parse businessDetails
+    if (businessDetails) {
+      try {
+        seller.businessDetails = JSON.parse(businessDetails);
+      } catch (error) {
+        return res.status(400).json({ error: "Invalid businessDetails format" });
+      }
+    }
+
     seller.status = status || seller.status;
 
     // Save the updated seller
@@ -122,7 +133,6 @@ const updateShopifySeller = async (req, res) => {
     res.status(500).json({ message: "Error updating Shopify seller", error });
   }
 };
-
 
 // Delete Shopify seller
 const deleteShopifySeller = async (req, res) => {

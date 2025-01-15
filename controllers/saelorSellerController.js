@@ -1,11 +1,33 @@
 const SaelorSeller = require('../models/SaelorSeller');
+const { Binary } = require("mongodb");
 
+// shopLink: { type: String, required: true },
+//     authToken: { type: String, required: true },
 // Create a new Saelor seller
 createSaelorSeller = async (req, res) => {
   try {
-    const newSeller = new SaelorSeller(req.body);
-    await newSeller.save();
-    res.status(201).json({ message: 'Saelor seller created successfully', seller: newSeller });
+    const { shopLink, authToken, businessDetails, status, documentType } = req.body;
+
+    if(!req.files || req.files.length === 0){
+      return res.status(400).json({ error:"No files uploaded"});
+    }
+
+    const documents = req.files.map((file, index)=>({
+      documentType: documentType && documentType[index] ? documentType[index] : "Document Type",
+      documentURL: new Binary(file.buffer),
+    }));
+
+    const seller = new SaelorSeller({
+      shopLink,
+      authToken,
+      businessDetails: JSON.parse(businessDetails),
+      documents,
+      status,
+    });
+
+    await seller.save();
+
+    res.status(201).json({ message: 'Saelor seller created successfully', seller });
   } catch (error) {
     res.status(500).json({ message: 'Error creating Saelor seller', error });
   }
@@ -25,6 +47,9 @@ getAllSaelorSellers = async (req, res) => {
 getSaelorSellerById = async (req, res)=>{
   try {
     const seller = await SaelorSeller.findById(req.params.id);
+    if (!seller) {
+      return res.status(404).json({ error: "Seller not found" });
+    }
     res.status(200).json(seller);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching Saelor seller', error });
@@ -32,10 +57,48 @@ getSaelorSellerById = async (req, res)=>{
 }
 
 // Update Saelor seller
-updateSaelorSeller = async (req, res) =>{
+const updateSaelorSeller = async (req, res) =>{
   try {
-      const seller = await SaelorSeller.findByIdAndUpdate(req.params.id, req.body, {new:true});
-      res.status(200).json(seller);
+    const { shopLink, authToken, businessDetails, status, documentType } = req.body;
+
+    const seller = await SaelorSeller.findById(req.params.id);
+    if (!seller) {
+      return res.status(404).json({ error: "Seller not found" }); 
+    }
+
+    if(req.files && req.files.length > 0){
+      const newDocuments = req.files.map((file, index) => ({
+        documentType: Array.isArray(documentType)
+          ? (documentType[index] || "Default Document")
+          : documentType || "Default Document",
+        documentURL: new Binary(file.buffer),
+      }));
+
+      newDocuments.forEach((newDoc) => {
+        const existingDocIndex = seller.documents.findIndex(
+          (doc) => doc.documentType === newDoc.documentType
+        );
+        if (existingDocIndex !== -1) {
+          // If a document with the same type exists, replace it
+          seller.documents.splice(existingDocIndex, 1); // Remove the old document
+        }
+        seller.documents.push(newDoc); // Add the new document
+      });
+    }
+
+    seller.shopLink = shopLink || seller.shopLink;
+    seller.authToken = authToken || seller.authToken;
+    if (businessDetails) {
+      try {
+        seller.businessDetails = JSON.parse(businessDetails);
+      } catch (error) {
+        return res.status(400).json({ error: "Invalid businessDetails format" });
+      }
+    }
+    seller.status = status;
+    await seller.save();
+
+    res.status(200).json({message:'Saelor seller updated successfully',seller});
   }
   catch(error){
       res.status(500).json({message:'Error updating Saelor seller',error});

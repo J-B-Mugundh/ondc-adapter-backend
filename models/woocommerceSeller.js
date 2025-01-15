@@ -12,7 +12,7 @@ const WooCommerceSellerSchema = new mongoose.Schema({
   documents: [
     {
       documentType: { type: String, required: true },
-      documentURL: { type: String, required: true },
+      documentURL: { type: Buffer, required: true },
     }
   ],
   businessDetails: {

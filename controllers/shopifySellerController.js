@@ -6,7 +6,7 @@ const { Binary } = require("mongodb");
 // Create a new Shopify seller
 const createShopifySeller = async (req, res) => {
   try {
-    const { shopLink, accessKey, businessDetails, status, documentTypes } = req.body;
+    const { shopLink, accessKey, businessDetails, status, documentType } = req.body;
 
     // Check if files are uploaded
     if (!req.files || req.files.length === 0) {
@@ -15,7 +15,7 @@ const createShopifySeller = async (req, res) => {
 
     // Prepare documents array
     const documents = req.files.map((file, index) => ({
-      documentType: documentTypes && documentTypes[index] ? documentTypes[index] : "Document Type",
+      documentType: documentType && documentType[index] ? documentType[index] : "Document Type",
       documentURL: new Binary(file.buffer), // Convert file buffer to BSON Binary
     }));
 
@@ -64,7 +64,6 @@ const getShopifySellerById = async (req, res) => {
       seller,
     });
   } catch (error) {
-    console.error("Error fetching Shopify seller:", error);
     res.status(500).json({ message: "Error fetching Shopify seller", error });
   }
 };
@@ -72,7 +71,7 @@ const getShopifySellerById = async (req, res) => {
 
 const updateShopifySeller = async (req, res) => {
   try {
-    const { shopLink, accessKey, businessDetails, status, documentTypes } = req.body;
+    const { shopLink, accessKey, businessDetails, status, documentType } = req.body;
 
     // Find the seller by ID
     const seller = await ShopifySeller.findById(req.params.id);
@@ -84,9 +83,9 @@ const updateShopifySeller = async (req, res) => {
     if (req.files && req.files.length > 0) {
       // Prepare updated documents array
       const newDocuments = req.files.map((file, index) => ({
-        documentType: Array.isArray(documentTypes)
-          ? (documentTypes[index] || "Default Document")
-          : documentTypes || "Default Document",
+        documentType: Array.isArray(documentType)
+          ? (documentType[index] || "Default Document")
+          : documentType || "Default Document",
         documentURL: new Binary(file.buffer),
       }));
 

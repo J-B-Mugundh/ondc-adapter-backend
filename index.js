@@ -5,6 +5,7 @@ const shopifySellerRoutes = require('./routes/shopifySellerRoutes');
 const saelorSellerRoutes = require('./routes/saelorSellerRoutes');
 const wooCommerceSellerRoutes = require('./routes/wooCommerceSellerRoutes');
 const searchRoutes = require("./routes/searchRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
+app.use('/ondc', cartRoutes)
 app.use('/ondc', searchRoutes)
 app.use('/ondc/shopify', shopifySellerRoutes);
 app.use('/ondc/saelor', saelorSellerRoutes);

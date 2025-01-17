@@ -7,52 +7,53 @@ const searchProductInShop = async (shopUrl, authToken, businessName, productName
     const query = `
     query {
         products(search: "${productName}", first: 10, channel: "default-channel") {
-        edges {
-            node {
-            id
-            name
-            slug
-            description
-            category {
-                name
-            }
-            images {
-                url
-            }
-            pricing {
-                priceRange {
-                start {
-                    net {
-                    amount
-                    currency
+            edges {
+                node {
+                    id
+                    name
+                    slug
+                    description
+                    category {
+                        name
+                    }
+                    images {
+                        url
+                    }
+                    pricing {
+                        priceRange {
+                            start {
+                                net {
+                                    amount
+                                    currency
+                                }
+                            }
+                        }
+                    }
+                    variants {
+                        id
+                        name
                     }
                 }
-                }
             }
-            }
-        }
         }
     }
     `;
 
-    // console.log('GraphQL Query:', query);
-
-    // Make the request to Saleor
     const response = await axios.post(
       `${shopUrl}/graphql/`,
       { query },
       {
         headers: {
-          Authorization: `Bearer ${authToken}`, 
-          "Content-Type": "application/json", 
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
         },
       }
     );
 
-    console.log('Saleor API Response:', response.data);
+    console.log("Saleor API Response:", response.data);
 
     if (response.data.errors) {
-      console.error('Saleor API Errors:', response.data.errors);
+      console.error("Saleor API Errors:", response.data.errors);
       throw new Error(`Saleor API returned errors: ${JSON.stringify(response.data.errors)}`);
     }
 
@@ -61,7 +62,7 @@ const searchProductInShop = async (shopUrl, authToken, businessName, productName
       return [];
     }
 
-    // Return the product details with price as separate amount and currency
+    // Return the product details, including variant IDs
     return response.data.data.products.edges.map(product => {
       const pricing = product.node.pricing?.priceRange?.start;
 
@@ -76,6 +77,10 @@ const searchProductInShop = async (shopUrl, authToken, businessName, productName
         category: product.node.category.name,
         images: product.node.images.map(image => image.url),
         price: amount ? { amount, currency } : { amount: "N/A", currency: "N/A" },
+        variants: product.node.variants.map(variant => ({
+          id: variant.id,
+          name: variant.name
+        })),
         sellerName: businessName
       };
     });

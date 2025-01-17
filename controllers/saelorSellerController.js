@@ -8,12 +8,15 @@ createSaelorSeller = async (req, res) => {
   try {
     const { shopLink, authToken, businessDetails, status, documentType } = req.body;
 
-    if(!req.files || req.files.length === 0){
-      return res.status(400).json({ error:"No files uploaded"});
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: "No files uploaded" });
     }
 
-    const documents = req.files.map((file, index)=>({
-      documentType: documentType && documentType[index] ? documentType[index] : "Document Type",
+    // Ensure documentType is an array
+    const documentTypes = Array.isArray(documentType) ? documentType : [documentType];
+
+    const documents = req.files.map((file, index) => ({
+      documentType: documentTypes[index] || "Default Document",
       documentURL: new Binary(file.buffer),
     }));
 
@@ -27,9 +30,9 @@ createSaelorSeller = async (req, res) => {
 
     await seller.save();
 
-    res.status(201).json({ message: 'Saelor seller created successfully', seller });
+    res.status(201).json({ message: "Saelor seller created successfully", seller });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating Saelor seller', error });
+    res.status(500).json({ message: "Error creating Saelor seller", error });
   }
 };
 
@@ -57,20 +60,20 @@ getSaelorSellerById = async (req, res)=>{
 }
 
 // Update Saelor seller
-const updateSaelorSeller = async (req, res) =>{
+const updateSaelorSeller = async (req, res) => {
   try {
     const { shopLink, authToken, businessDetails, status, documentType } = req.body;
 
     const seller = await SaelorSeller.findById(req.params.id);
     if (!seller) {
-      return res.status(404).json({ error: "Seller not found" }); 
+      return res.status(404).json({ error: "Seller not found" });
     }
 
-    if(req.files && req.files.length > 0){
+    if (req.files && req.files.length > 0) {
+      const documentTypes = Array.isArray(documentType) ? documentType : [documentType];
+
       const newDocuments = req.files.map((file, index) => ({
-        documentType: Array.isArray(documentType)
-          ? (documentType[index] || "Default Document")
-          : documentType || "Default Document",
+        documentType: documentTypes[index] || "Default Document",
         documentURL: new Binary(file.buffer),
       }));
 
@@ -80,9 +83,9 @@ const updateSaelorSeller = async (req, res) =>{
         );
         if (existingDocIndex !== -1) {
           // If a document with the same type exists, replace it
-          seller.documents.splice(existingDocIndex, 1); // Remove the old document
+          seller.documents.splice(existingDocIndex, 1);
         }
-        seller.documents.push(newDoc); // Add the new document
+        seller.documents.push(newDoc);
       });
     }
 
@@ -98,12 +101,11 @@ const updateSaelorSeller = async (req, res) =>{
     seller.status = status;
     await seller.save();
 
-    res.status(200).json({message:'Saelor seller updated successfully',seller});
+    res.status(200).json({ message: "Saelor seller updated successfully", seller });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating Saelor seller", error });
   }
-  catch(error){
-      res.status(500).json({message:'Error updating Saelor seller',error});
-  }
-}
+};
 
 // Delete Saelor seller
 deleteSaelorSeller = async (req, res) =>{

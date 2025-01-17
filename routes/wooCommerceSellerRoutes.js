@@ -11,3 +11,4 @@ router.get('/:id', getWooCommerceSellerById);
 router.put('/:id', upload.array("documents"), updateWooCommerceSeller);
 router.delete('/:id', deleteWooCommerceSeller);
 module.exports = router;
+

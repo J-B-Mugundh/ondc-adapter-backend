@@ -60,9 +60,9 @@ const getShopifySellerById = async (req, res) => {
       return res.status(404).json({ error: "Seller not found" });
     }
 
-    res.status(200).json({
-      seller,
-    });
+    res.status(200).json(
+      seller
+    );
   } catch (error) {
     res.status(500).json({ message: "Error fetching Shopify seller", error });
   }

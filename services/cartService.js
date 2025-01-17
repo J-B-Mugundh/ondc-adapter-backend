@@ -69,6 +69,7 @@ const createCheckout = async (variantId, quantity, email, saleorUrl, authToken) 
 };
 
 // Update checkout with address and email
+// Update checkout with address and email
 const updateCheckoutWithAddress = async (
   checkoutId,
   shippingAddress,
@@ -87,7 +88,7 @@ const updateCheckoutWithAddress = async (
           streetAddress1: "${shippingAddress.streetAddress1}"
           city: "${shippingAddress.city}"
           postalCode: "${shippingAddress.postalCode}"
-          country: "US"
+          country: US
           countryArea: "${shippingAddress.countryArea}"
         }
       ) {
@@ -105,7 +106,7 @@ const updateCheckoutWithAddress = async (
           streetAddress1: "${billingAddress.streetAddress1}"
           city: "${billingAddress.city}"
           postalCode: "${billingAddress.postalCode}"
-          country: "US"
+          country: US
           countryArea: "${billingAddress.countryArea}"
         }
       ) {
@@ -130,6 +131,16 @@ const updateCheckoutWithAddress = async (
           message
         }
       }
+
+      checkoutShippingMethodUpdate(
+        checkoutId: "${checkoutId}"
+        shippingMethodId : "U2hpcHBpbmdNZXRob2Q6MQ=="
+      ) {
+        errors {
+          field
+          message
+        }
+      }
     }
   `;
 
@@ -142,20 +153,17 @@ const updateCheckoutWithAddress = async (
   if (
     result.data.checkoutShippingAddressUpdate.errors.length > 0 ||
     result.data.checkoutBillingAddressUpdate.errors.length > 0 ||
-    result.data.checkoutEmailUpdate.errors.length > 0
+    result.data.checkoutEmailUpdate.errors.length > 0 ||
+    result.data.checkoutShippingMethodUpdate.errors.length > 0
   ) {
-    console.error("Address Update Errors:", result.data);
-    throw new Error("Failed to update checkout address or email");
+    console.error("Address or Shipping Method Update Errors:", result.data);
+    throw new Error("Failed to update checkout address, email, or shipping method");
   }
 
-  // Safeguard null `shippingMethods`
-  const shippingMethods = result.data.checkoutEmailUpdate.checkout?.shippingMethods || [];
-  if (shippingMethods.length === 0) {
-    throw new Error("No shipping methods available");
-  }
-
+  // Return updated checkout data
   return result.data.checkoutEmailUpdate.checkout;
 };
+
 
 // Place an order
 const placeOrder = async (checkoutId, saleorUrl, authToken) => {

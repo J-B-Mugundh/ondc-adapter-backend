@@ -1,7 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 // Saleor shop link and authorization token
 const SALEOR_SHOP_LINK = 'https://store-vaqfnffi.saleor.cloud/graphql/';

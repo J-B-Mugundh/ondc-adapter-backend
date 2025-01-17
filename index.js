@@ -13,11 +13,7 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:3000', // Allow only the frontend origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
-  credentials: true, // Include credentials like cookies if needed
-}));
+app.use(cors());
 // Routes
 app.use('/ondc/shopify', shopifySellerRoutes);
 app.use('/ondc/saelor', saelorSellerRoutes);

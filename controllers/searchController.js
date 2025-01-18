@@ -1,6 +1,8 @@
 const SaelorSeller = require('../models/SaelorSeller');
+const ShopifySeller = require('../models/ShopifySeller');
 const WooCommerceSeller = require('../models/WooCommerceSeller');
 const { searchProductInShop } = require('../services/saleorService');
+const { searchProductInShopify } = require('../services/shopifyService');
 const { searchProductInWooCommerce } = require('../woocom');
 
 const searchProduct = async (req, res) => {
@@ -14,9 +16,11 @@ const searchProduct = async (req, res) => {
     // Fetch verified Saleor sellers
     const saleorSellers = await SaelorSeller.find({ status: 'Verified' });
     const wooCommerceSellers = await WooCommerceSeller.find({ status: 'Verified' });
+    const shopifySellers = await ShopifySeller.find({ status: 'Verified' });
 
     console.log('Verified Saleor Sellers:', saleorSellers);
     console.log('Verified WooCommerce Sellers:', wooCommerceSellers);
+    console.log('Verified Shopify Sellers:', shopifySellers);
 
     const results = [];
 
@@ -58,6 +62,21 @@ const searchProduct = async (req, res) => {
         );
       }
     }
+
+        // Fetch products from shopify sellers
+        for (const seller of shopifySellers) {
+          const products = await searchProductInShopify(
+            seller.shopLink,
+            seller.accessKey,
+            seller.businessDetails.businessName,
+            productName
+          );
+          console.log(products);
+         /* shopify */
+          if (products.length > 0) {
+            results.push(...products);
+          }
+        }
 
     console.log('Final Results:', results);
 

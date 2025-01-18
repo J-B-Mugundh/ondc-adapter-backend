@@ -1,6 +1,6 @@
 const axios = require('axios');
 const https = require('https');
-const WooCommerceSeller = require('../models/WooCommerceSeller');
+
 
 // Function to create Axios instance for WooCommerce
 const createAxiosInstance = (shopLink, consumerKey, consumerSecret) => {

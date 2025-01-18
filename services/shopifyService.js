@@ -58,9 +58,15 @@ const searchProductByName = async (productName,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCE
     name: product.node.title,
     description: product.node.description,
     category: product.node.productType, 
-    image: product.node.images.edges.length > 0 ? product.node.images.edges[0].node.src : null,
-    price: product.node.priceRange.minVariantPrice.amount,
-    sellerName: businessName
+    images: product.node.images.edges.map(image => image.node.src),
+    price: {
+      amount: parseFloat(product.node.priceRange.minVariantPrice.amount), // Ensure amount is a number
+      currency: product.node.priceRange.minVariantPrice.currencyCode // Use currency code from the response
+    },
+    sellerName: businessName,
+    shopLink: SHOPIFY_STORE_DOMAIN,
+    accessKey: SHOPIFY_ACCESS_TOKEN,
+    sellerPlatform: "shopify",
   }));
 };
 // Create a draft order

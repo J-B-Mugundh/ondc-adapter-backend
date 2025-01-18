@@ -1,7 +1,7 @@
-const SaelorSeller = require('../models/SaelorSeller');
-const ShopifySeller = require('../models/ShopifySeller');
-const { searchProductInShop } = require("../services/saleorService");
-const { searchProductInShopify } = require('../services/shopifyService');
+const SaelorSeller = require('./models/SaelorSeller');
+const ShopifySeller = require('./models/ShopifySeller');
+const { searchProductInShop } = require("./services/saleorService");
+const { searchProductInShopify } = require('./services/shopifyService');
 
 const commonsearchProduct = async (req, res) => {
   const { productName } = req.body;

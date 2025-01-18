@@ -3,7 +3,7 @@ const ShopifySeller = require('../models/ShopifySeller');
 const WooCommerceSeller = require('../models/WooCommerceSeller');
 const { searchProductInShop } = require('../services/saleorService');
 const { searchProductInShopify } = require('../services/shopifyService');
-const { searchProductInWooCommerce } = require('../woocom');
+const WooCommerceService = require('../services/wooCommerceService');  // Import the service class
 
 const searchProduct = async (req, res) => {
   const { productName } = req.body;
@@ -40,13 +40,14 @@ const searchProduct = async (req, res) => {
       }
     }
 
-    // Fetch products from WooCommerce sellers
+    // Fetch products from WooCommerce sellers using WooCommerceService
     for (const seller of wooCommerceSellers) {
-      const products = await searchProductInWooCommerce(
+      const products = await WooCommerceService.searchProductInWooCommerce(  // Use the service class here
         seller.shopLink,
         seller.consumerKey,
         seller.consumerSecret,
-        productName
+        productName,
+        seller.businessDetails.businessName
       );
 
       console.log(`Products found for WooCommerce seller ${seller.businessDetails.businessName}:`, products);
@@ -63,20 +64,19 @@ const searchProduct = async (req, res) => {
       }
     }
 
-        // Fetch products from shopify sellers
-        for (const seller of shopifySellers) {
-          const products = await searchProductInShopify(
-            seller.shopLink,
-            seller.accessKey,
-            seller.businessDetails.businessName,
-            productName
-          );
-          console.log(products);
-         /* shopify */
-          if (products.length > 0) {
-            results.push(...products);
-          }
-        }
+    // Fetch products from Shopify sellers
+    for (const seller of shopifySellers) {
+      const products = await searchProductInShopify(
+        seller.shopLink,
+        seller.accessKey,
+        seller.businessDetails.businessName,
+        productName
+      );
+      console.log(products);
+      if (products.length > 0) {
+        results.push(...products);
+      }
+    }
 
     console.log('Final Results:', results);
 
@@ -92,4 +92,3 @@ const searchProduct = async (req, res) => {
 };
 
 module.exports = { searchProduct };
-

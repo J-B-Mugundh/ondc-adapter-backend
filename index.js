@@ -1,5 +1,5 @@
 const express = require('express');
-const cors=require('cors');
+const cors = require('cors');
 const connectDB = require('./config/db');
 const shopifySellerRoutes = require('./routes/shopifySellerRoutes');
 const saelorSellerRoutes = require('./routes/saelorSellerRoutes');

@@ -83,7 +83,8 @@ const searchProductInShop = async (shopUrl, authToken, businessName, productName
         })),
         sellerName: businessName,
         shopUrl: shopUrl,
-        authToken: authToken
+        authToken: authToken,
+        sellerPlatform: "Saleor"
       };
     });
   } catch (error) {

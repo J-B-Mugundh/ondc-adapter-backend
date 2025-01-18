@@ -13,16 +13,23 @@ const app = express();
 connectDB();
 
 // Middleware
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}));
+
 app.use(express.json());
-app.use(cors());
+
 
 // Routes
-app.use('/ondc', cartRoutes)
-app.use('/ondc', searchRoutes)
+
 app.use('/ondc/shopify', shopifySellerRoutes);
 app.use('/ondc/saelor', saelorSellerRoutes);
 app.use('/ondc/woocommerce', wooCommerceSellerRoutes);
+app.use('/ondc/cart', cartRoutes)
+app.use('/ondc/search', searchRoutes)
 
-app.listen(3000, () => {
-  console.log(`Server running on port 3000!`);
+app.listen(5000, () => {
+  console.log(`Server running on port 5000!`);
 });

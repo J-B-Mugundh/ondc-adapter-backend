@@ -81,7 +81,9 @@ const searchProductInShop = async (shopUrl, authToken, businessName, productName
           id: variant.id,
           name: variant.name
         })),
-        sellerName: businessName
+        sellerName: businessName,
+        shopUrl: shopUrl,
+        authToken: authToken
       };
     });
   } catch (error) {

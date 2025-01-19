@@ -23,7 +23,7 @@ const graphqlRequest = async (query,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCESS_TOKEN) =
 
 // Search for products by name
 
-const searchProductByName = async (productName,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCESS_TOKEN,businessName) => {
+const searchProductByName = async (productName, SHOPIFY_STORE_DOMAIN, SHOPIFY_ACCESS_TOKEN, businessName) => {
   const query = `
     query {
       products(first: 5, query: "title:${productName}*") {
@@ -46,15 +46,23 @@ const searchProductByName = async (productName,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCE
                 currencyCode
               }
             }
+            variants(first: 1) { 
+              edges {
+                node {
+                  id
+                }
+              }
+            }
           }
         }
       }
     }
   `;
+
+  const result = await graphqlRequest(query, SHOPIFY_STORE_DOMAIN, SHOPIFY_ACCESS_TOKEN);
   
-  const result = await graphqlRequest(query,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCESS_TOKEN);
   return result.data.products.edges.map(product => ({
-    id: product.node.id,
+    id: product.node.variants.edges[0]?.node.id, // Get the first variant's ID
     name: product.node.title,
     description: product.node.description,
     category: product.node.productType, 
@@ -69,8 +77,9 @@ const searchProductByName = async (productName,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCE
     sellerPlatform: "shopify",
   }));
 };
+
 // Create a draft order
-const createDraftOrder = async (variantId, quantity,  SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCESS_TOKEN) => {
+const createDraftOrder = async (variantId, quantity, SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCESS_TOKEN) => {
   const query = `
     mutation {
       draftOrderCreate(input: {
@@ -121,7 +130,7 @@ const completeDraftOrder = async (draftOrderId,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCE
 
   const result = await graphqlRequest(query,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCESS_TOKEN);
   console.log(result);
-  return result.data.draftOrderComplete.draftOrder.order;
+  return {result:result.data.draftOrderComplete.draftOrder.order,message:"order placed successfully."};
 };
 
 

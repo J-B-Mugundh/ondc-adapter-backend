@@ -72,7 +72,6 @@ const searchProductInShop = async (shopUrl, authToken, businessName, productName
 
       return {
         name: product.node.name,
-        slug: product.node.slug,
         description: product.node.description || "No description available",
         category: product.node.category.name,
         images: product.node.images.map(image => image.url),

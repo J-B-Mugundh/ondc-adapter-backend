@@ -1,6 +1,8 @@
+const { create } = require("../models/SaelorSeller");
 const cartService = require("../services/cartService");
+const { completeDraftOrder, createDraftOrder } = require("../services/shopifyService");
 const { placeOrderInWooCommerce } = require("../woocom");
-//const { processShopifyOrder } = require("../shopify"); // Example Shopify order function
+
 
 // Controller for handling the /cart endpoint
 exports.processCart = async (req, res, next) => {
@@ -34,7 +36,7 @@ exports.processCart = async (req, res, next) => {
             continue;
           }
 
-          const saleorEmail = "customer@example.com";
+          const saleorEmail = "mugundhjb@gmail.com";
           const saleorAddress = {
             firstName: "John",
             lastName: "Doe",
@@ -87,9 +89,12 @@ exports.processCart = async (req, res, next) => {
           result = await placeOrderInWooCommerce(shopLink, consumerKey, consumerSecret, wooUserDetails);
           break;
 
-        /*case "shopify":
-          const { product_id: shopifyProductId, quantity: shopifyQuantity, shopifyAccessToken } = platformDetails;
-          if (!shopifyProductId || !shopifyQuantity || !shopifyAccessToken) {
+        case "shopify":
+          
+          const { product_id: shopifyProductId, quantity: shopifyQuantity,shopdomainLink,shopifyAccessToken } = platformDetails;
+          
+
+           if (!shopifyProductId || !shopifyQuantity || !shopifyAccessToken) {
             results.push({
               platform: "shopify",
               error: "product_id, quantity, and shopifyAccessToken are required for Shopify",
@@ -97,8 +102,10 @@ exports.processCart = async (req, res, next) => {
             continue;
           }
 
-          result = await processShopifyOrder(shopifyProductId, shopifyQuantity, shopifyAccessToken);
-          break;*/
+          const draft= await createDraftOrder(shopifyProductId, shopifyQuantity,shopdomainLink,shopifyAccessToken);
+        
+          result = await completeDraftOrder(draft.id, shopdomainLink,shopifyAccessToken);
+          break;
 
         default:
           results.push({ platform, error: "Unsupported platform" });

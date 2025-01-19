@@ -33,14 +33,14 @@ const searchProduct = async (req, res) => {
         productName
       );
 
-      console.log(`Products found for Saleor seller ${seller.businessDetails.businessName}:`, products);
+      console.log("Products found for Saleor seller ${seller.businessDetails.businessName}:", products);
 
       if (products.length > 0) {
         results.push(...products);
       }
     }
 
-    // Fetch products from WooCommerce sellers using WooCommerceService
+    // // Fetch products from WooCommerce sellers using WooCommerceService
     for (const seller of wooCommerceSellers) {
       const products = await WooCommerceService.searchProductInWooCommerce(  // Use the service class here
         seller.shopLink,
@@ -50,18 +50,15 @@ const searchProduct = async (req, res) => {
         seller.businessDetails.businessName
       );
 
-      console.log(`Products found for WooCommerce seller ${seller.businessDetails.businessName}:`, products);
+      console.log("Products found for WooCommerce seller ${seller.businessDetails.businessName}:", products);
 
       if (products.length > 0) {
         results.push(
           ...products.map((product) => ({
-            id:product.id,
             name: product.name,
             price: product.price,
             description: product.description,
             shopLink: seller.shopLink,
-            consumerKey:seller.consumerKey,
-            consumerSecret:seller.consumerSecret
           }))
         );
       }
@@ -94,4 +91,4 @@ const searchProduct = async (req, res) => {
   }
 };
 
-module.exports = { searchProduct };
+module.exports = { searchProduct };

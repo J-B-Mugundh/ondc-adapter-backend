@@ -1,5 +1,6 @@
 const express = require("express");
 const { searchProduct } = require("../controllers/searchController");
+const { createDraftOrder, completeDraftOrder } = require("../services/shopifyService");
 
 
 const router = express.Router();
@@ -8,16 +9,17 @@ router.post("/", searchProduct);
 
 /**order for shopify */
 router.post('/place-order', async (req, res) => {
-    const { variantId, quantity, email } = req.body;
+    const { variantId, quantity, shopLink, shopifyAccessToken  } = req.body;
+    console.log("shopLink condse",shopLink,shopifyAccessToken);
   
     try {
       // Create a draft order
-      const draftOrder = await createDraftOrder(variantId, quantity, email);
+      const draftOrder = await createDraftOrder(variantId, quantity,shopLink,shopifyAccessToken);
       console.log('Draft order created:', draftOrder);
   
       // Complete the draft order (finalize the order)
       const draftOrderId = draftOrder.id;
-      const completedOrder = await completeDraftOrder(draftOrderId);
+      const completedOrder = await completeDraftOrder(draftOrderId,shopLink,shopifyAccessToken);
       console.log('Order completed:', completedOrder);
   
       return res.json({ message: 'Order successfully completed!', order: completedOrder });

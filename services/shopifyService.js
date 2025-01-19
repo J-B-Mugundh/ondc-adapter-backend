@@ -70,14 +70,14 @@ const searchProductByName = async (productName,SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCE
   }));
 };
 // Create a draft order
-const createDraftOrder = async (variantId, quantity, email, SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCESS_TOKEN) => {
+const createDraftOrder = async (variantId, quantity,  SHOPIFY_STORE_DOMAIN,SHOPIFY_ACCESS_TOKEN) => {
   const query = `
     mutation {
       draftOrderCreate(input: {
         lineItems: [
           { variantId: "${variantId}", quantity: ${quantity} }
         ],
-        email: "${email}"
+        email: "santhoshkowsalya2004@gmail.com"
       }) {
         draftOrder {
           id

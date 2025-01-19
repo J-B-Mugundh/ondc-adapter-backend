@@ -55,10 +55,13 @@ const searchProduct = async (req, res) => {
       if (products.length > 0) {
         results.push(
           ...products.map((product) => ({
+            id:product.id,
             name: product.name,
             price: product.price,
             description: product.description,
             shopLink: seller.shopLink,
+            consumerKey:seller.consumerKey,
+            consumerSecret:seller.consumerSecret
           }))
         );
       }

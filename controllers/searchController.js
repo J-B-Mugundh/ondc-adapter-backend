@@ -59,6 +59,9 @@ const searchProduct = async (req, res) => {
             price: product.price,
             description: product.description,
             shopLink: seller.shopLink,
+              consumerKey:seller.consumerKey,
+              consumerSecret:seller.consumerSecret
+               
           }))
         );
       }

@@ -8,7 +8,7 @@ const { placeOrderInWooCommerce } = require("../woocom");
 exports.processCart = async (req, res, next) => {
   try {
     const { platforms } = req.body;
-
+     console.log("req.body",req.body);
     if (!platforms || !Array.isArray(platforms)) {
       return res.status(400).json({ error: "Platforms array is required in the request body" });
     }
@@ -93,7 +93,6 @@ exports.processCart = async (req, res, next) => {
           
           const { product_id: shopifyProductId, quantity: shopifyQuantity,shopdomainLink,shopifyAccessToken } = platformDetails;
           
-
            if (!shopifyProductId || !shopifyQuantity || !shopifyAccessToken) {
             results.push({
               platform: "shopify",

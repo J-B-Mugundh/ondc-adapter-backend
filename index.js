@@ -6,6 +6,7 @@ const saelorSellerRoutes = require('./routes/saelorSellerRoutes');
 const wooCommerceSellerRoutes = require('./routes/wooCommerceSellerRoutes');
 const searchRoutes = require("./routes/searchRoutes");
 const cartRoutes = require("./routes/cartRoutes");
+const ordersRoute = require('./routes/ordersRoute');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/ondc/saelor', saelorSellerRoutes);
 app.use('/ondc/woocommerce', wooCommerceSellerRoutes);
 app.use('/ondc/cart', cartRoutes)
 app.use('/ondc/search', searchRoutes)
+app.use('/ondc/orders', ordersRoute);
 
 app.listen(5000, () => {
   console.log(`Server running on port 5000!`);

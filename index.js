@@ -22,7 +22,6 @@ app.use(cors({
 
 app.use(express.json());
 
-
 // Routes
 
 app.use('/ondc/search', searchRoutes)
@@ -32,6 +31,10 @@ app.use('/ondc/woocommerce', wooCommerceSellerRoutes);
 app.use('/ondc/cart', cartRoutes)
 app.use('/ondc/search', searchRoutes)
 app.use('/ondc/orders', ordersRoute);
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+})
 
 app.listen(5000, () => {
   console.log(`Server running on port 5000!`);

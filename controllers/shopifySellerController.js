@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const ShopifySeller = require("../models/ShopifySeller");
+const ShopifySeller = require("../models/ShopifySeller.js");
 const { Binary } = require("mongodb");
 
 // Create a new Shopify seller

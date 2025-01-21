@@ -1,0 +1,29 @@
+name: Deploy Node Application
+
+on: 
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}     
+      - name: Build Docker Image
+        run: docker build -t mugundh07/ondc-adapter-backend:latest .
+      - name: Publish Image to docker hub
+        run: docker push mugundh07/ondc-adapter-backend:latest 
+ 
+  deploy:
+    needs: build
+    runs-on: self-hosted 
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull mugundh07/ondc-adapter-backend:latest 
+      - name: Delete old container
+        run: docker rm -f nodejs-app-container  
+      - name: Run Docker Container
+        run: docker run -d -p 5000:5000 --name nodejs-app-container -e MONGO_DB_URL='mongodb+srv://mugundhjb:mugundh123@cluster0.ok3tu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0' mugundh07/ondc-adapter-backend

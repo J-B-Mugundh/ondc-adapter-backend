@@ -1,9 +1,9 @@
-const SaelorSeller = require('../models/SaelorSeller');
-const ShopifySeller = require('../models/ShopifySeller');
-const WooCommerceSeller = require('../models/WooCommerceSeller');
-const { searchProductInShop } = require('../services/saleorService');
-const { searchProductInShopify } = require('../services/shopifyService');
-const WooCommerceService = require('../services/wooCommerceService');  // Import the service class
+const SaelorSeller = require('../models/SaelorSeller.js');
+const ShopifySeller = require('../models/ShopifySeller.js');
+const WooCommerceSeller = require('../models/WooCommerceSeller.js');
+const { searchProductInShop } = require('../services/saleorService.js');
+const { searchProductInShopify } = require('../services/shopifyService.js');
+const WooCommerceService = require('../services/wooCommerceService.js');  // Import the service class
 
 const searchProduct = async (req, res) => {
   const { productName } = req.body;
@@ -41,31 +41,31 @@ const searchProduct = async (req, res) => {
     }
 
     // // Fetch products from WooCommerce sellers using WooCommerceService
-    for (const seller of wooCommerceSellers) {
-      const products = await WooCommerceService.searchProductInWooCommerce(  // Use the service class here
-        seller.shopLink,
-        seller.consumerKey,
-        seller.consumerSecret,
-        productName,
-        seller.businessDetails.businessName
-      );
+    // for (const seller of wooCommerceSellers) {
+    //   const products = await WooCommerceService.searchProductInWooCommerce(  // Use the service class here
+    //     seller.shopLink,
+    //     seller.consumerKey,
+    //     seller.consumerSecret,
+    //     productName,
+    //     seller.businessDetails.businessName
+    //   );
 
-      console.log("Products found for WooCommerce seller ${seller.businessDetails.businessName}:", products);
+    //   console.log("Products found for WooCommerce seller ${seller.businessDetails.businessName}:", products);
 
-      if (products.length > 0) {
-        results.push(
-          ...products.map((product) => ({
-            name: product.name,
-            price: product.price,
-            description: product.description,
-            shopLink: seller.shopLink,
-              consumerKey:seller.consumerKey,
-              consumerSecret:seller.consumerSecret
+    //   if (products.length > 0) {
+    //     results.push(
+    //       ...products.map((product) => ({
+    //         name: product.name,
+    //         price: product.price,
+    //         description: product.description,
+    //         shopLink: seller.shopLink,
+    //           consumerKey:seller.consumerKey,
+    //           consumerSecret:seller.consumerSecret
                
-          }))
-        );
-      }
-    }
+    //       }))
+    //     );
+    //   }
+    // }
 
     // Fetch products from Shopify sellers
     for (const seller of shopifySellers) {

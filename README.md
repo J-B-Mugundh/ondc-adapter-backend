@@ -109,7 +109,7 @@ Deployment:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/EduConnect.git
+git clone https://github.com/your-username/ONDC-Adapter-Avengers.git
 ```
 
 ---

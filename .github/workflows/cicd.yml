@@ -13,7 +13,7 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}     
       - name: Build Docker Image
-        run: docker build -t integrationninjas/nodejs-app  .
+        run: docker build -t mugundh07/ondc-adapter-backend:latest .
       - name: Publish Image to docker hub
         run: docker push mugundh07/ondc-adapter-backend:latest 
  
@@ -22,7 +22,7 @@ jobs:
     runs-on: self-hosted 
     steps:
       - name: Pull image from docker hub
-        run: docker pull integrationninjas/nodejs-app:latest 
+        run: docker pull mugundh07/ondc-adapter-backend:latest 
       - name: Delete old container
         run: docker rm -f nodejs-app-container  
       - name: Run Docker Container

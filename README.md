@@ -87,6 +87,7 @@ Platforms Used:
   
 Deployment:
 - AWS
+- Netlify
   
 <img src="ArchitecturePics/MINDMATE.AI.png" alt="Architecture">
 <img src="ArchitecturePics/MINDMATE.AI (1).png" alt="Architecture">
@@ -99,10 +100,6 @@ Deployment:
 - **Scalable Growth**:Modular microservices architecture allows easy addition of new platforms.
 - **Buyer Centric**:Offers buyers access to a unified marketplace with diverse products.
 - **Optimized Connectivity**:The adapter acts as a bridge, efficiently linking ONDC protocols with seller platforms, ensuring smooth and reliable data exchange.
-
-## How to run (Unit testing)?
-
----
 
 ## 
 
